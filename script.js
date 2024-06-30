@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     updateCartBadge();
 
-    const cartLink = document.getElementById('cart-link');
+    const cartButton = document.querySelector('.cart-button');
     const cartBadge = document.querySelector('.cart-badge');
     const modal = document.querySelector('.modal');
     const modalClose = document.querySelector('.close');
@@ -11,69 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const filter = document.querySelector('.filter');
     const wallet = document.querySelector('.wallet');
     const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-    const quantityButtons = document.querySelectorAll('.quantity-btn');
     const items = document.querySelectorAll('.item');
-    const loginForm = document.getElementById('login-form');
-    const loginMessage = document.getElementById('login-message');
-    let productId = -1;
-
+    
     setupFilter();
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevents the form from being submitted through the traditional process
-    
-            const formData = new FormData(loginForm);
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'login.php');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    try {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            // Login is successful, you can perform the desired actions
-                            // For example, updating the interface or redirecting
-                            loginMessage.innerHTML = '<div class="alert alert-success mt-3" role="alert">You have successfully logged in!</div>';
-                            setTimeout(function() {
-                                location.reload(); // Refresh the page after login
-                            }, 1000); // Refresh the page after 1 second
-                        } else {
-                            // Displays an error message if login failed
-                            loginMessage.innerHTML = '<div class="alert alert-danger mt-3" role="alert">Incorrect email address or password. Please try again.</div>';
-                        }
-                    } catch (error) {
-                        console.error('Error parsing JSON response:', error);
-                    }
-                } else {
-                    console.error('Request failed. Status:', xhr.status);
-                }
-            };
-            xhr.onerror = function() {
-                console.error('Request error.');
-            };
-            xhr.send(formData);
-        });
-    }    
-    
-    if (cartLink) {
-        cartLink.addEventListener('click', function() {
-            checkCart();
-            $('#cart-modal').modal('show');
-        });
-    }
 
     addToCartButtons.forEach(button => {
         button.addEventListener('click', function() {
-            event.preventDefault();
-            const quantity = document.getElementById('quantity').value;
+            const productId = button.dataset.id;
+            const quantity = 1;
             addToCart(productId, quantity);
-        });
-    });
-
-    quantityButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            productId = this.getAttribute('data-id');
-            $('#quantity-modal').modal('show');
         });
     });
 
@@ -87,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         updateCartBadge();
-                        $('#quantity-modal').modal('hide');
                         alert("Product successfully added to cart.")
                     } else {
                         alert(response.message);
@@ -135,28 +80,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     const cartContents = JSON.parse(xhr.responseText);
                     if (cartContents.length > 0) {
-                        let message = "";
+                        let message = "<p>Items in your cart:</p>";
                         let totalPrice = 0;
                         cartContents.forEach(item => {
                             totalPrice += item.price * item.quantity;
                             message += `
-                                        <div class = "cart-row">
-                                            <div class = "cart-column">
-                                                <h5 class="item-name">${item.name}</h5>
-                                                <h6 class="item-name">Quantity: ${item.quantity}</h6>
-                                                <h6 class="item-name">Price: $${item.price*1}</h6>
-                                                <h6 class="item-name">Total price: $${item.quantity*item.price}</h6>
-
-                                            </div>
-                                            <button class="remove-btn btn-block" data-id="${item.product_id}">Remove</button>
-                                        </div>
+                                <p class="item-name">${item.name}: ${item.quantity}</p>
+                                <button class="remove-btn" data-id="${item.product_id}">Remove</button>
                             `;
                         });
-                        message += `<h4>Total price: $${totalPrice.toFixed(2)}</h4>`;
+                        message += `<p>Total price: $${totalPrice.toFixed(2)}</p>`;
                         cartItemsList.innerHTML = message;
                         buyButton.style.display = 'block';
                     } else {
-                        cartItemsList.innerHTML = "<h5>Cart is empty!</h5>";
+                        cartItemsList.innerHTML = "<p>Cart is empty!</p>";
                         buyButton.style.display = 'none';
                     }
                     document.querySelectorAll('.remove-btn').forEach(button => {
@@ -206,6 +143,38 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Error removing product from cart.');
         };
         xhr.send(`product_id=${productId}`);
+    }
+
+    function clearCart() {
+        cart = {};
+        cartItemsCount = 0;
+        cartBadge.textContent = 0;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'clear_cart.php');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        cartItemsList.innerHTML = "<p>Cart is empty!</p>";
+        		buyButton.style.display = 'none';
+                    } else {
+                        alert('Error clearing cart: ' + response.error);
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON response:", error);
+                    console.error("Response:", xhr.responseText);
+                }
+            } else {
+                alert('Failed to clear cart.');
+            }
+        };
+        xhr.onerror = function() {
+            alert('Error clearing cart.');
+        };
+        xhr.send();
     }
 
     function clearCart() {
