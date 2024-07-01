@@ -123,6 +123,12 @@ body {
     margin-left: 2rem;
     margin-right: 2rem;
 }
+.remove-quantity {
+    width: 15%;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: auto;
+}
 
 @media (max-width: 768px) {
     .item {
@@ -146,5 +152,28 @@ body {
         font-size: 1.6rem;
         color: #6a6a6a;
         margin-bottom: 0;
+    }
+    .cart-row{
+        flex-direction: column;
+    }
+    .cart-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+    }
+    .remove-btn {
+        margin-top: 0.5rem;
+        margin-bottom:0.5rem;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        width: auto;
+        font-size: 1.2rem;
+    }
+    .remove-quantity {
+        width: 35%;
+        margin-top: 0;
+        margin-bottom:0.5rem;
+        margin-left: auto;
+        margin-right: auto;
     }
 }

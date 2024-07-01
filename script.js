@@ -211,8 +211,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <h6 class="item-name">Quantity: ${item.quantity}</h6>
                                         <h6 class="item-name">Price: $${item.price}</h6>
                                         <h6 class="item-name">Total price: $${item.quantity * item.price}</h6>
-                                        <input type="number" class="form-control quantity-input" data-id="${item.product_id}" min="1" max="${item.quantity}" value="1">
                                     </div>
+                                    <input type="number" class="form-control quantity-input remove-quantity" data-id="${item.product_id}" min="1" max="${item.quantity}" value="1">
                                     <button class="remove-btn btn-block" data-id="${item.product_id}">Remove</button>
                                 </div>
                             `;
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.querySelectorAll('.remove-btn').forEach(button => {
                         button.addEventListener('click', function() {
                             const productId = this.getAttribute('data-id');
-                            const quantity = this.previousElementSibling.querySelector('.quantity-input').value;
+                            const quantity = this.parentElement.querySelector('.quantity-input').value;
                             removeFromCart(productId, quantity);
                         });
                     });
@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         cartContents.forEach(item => {
                             totalPrice += item.price * item.quantity;
                         });
-
+    
                         const xhrWallet = new XMLHttpRequest();
                         xhrWallet.open('GET', 'get_wallet_amount.php');
                         xhrWallet.onload = function() {
@@ -327,15 +327,19 @@ document.addEventListener('DOMContentLoaded', function() {
                                 try {
                                     const walletData = JSON.parse(xhrWallet.responseText);
                                     let walletAmountFromDB = parseFloat(walletData.amount);
-
+    
                                     if (totalPrice <= walletAmountFromDB) {
                                         walletAmountFromDB -= totalPrice;
                                         updateWallet(walletAmountFromDB);
                                         updateWalletInDatabase(walletAmountFromDB);
-
+    
+                                        // Clear the cart and update UI
                                         clearCart();
                                         updateCartBadge();
-
+    
+                                        // Save transaction to database
+                                        saveTransaction(cartContents);
+    
                                         alert("Purchase successful!");
                                     } else {
                                         alert("Not enough money!");
@@ -368,6 +372,35 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         xhrCart.send();
     }
+    
+    function saveTransaction(cartContents) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'save_transaction.php');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        console.log("Transaction saved successfully.");
+                    } else {
+                        alert(response.message);
+                    }
+                } catch (error) {
+                    console.error("Error parsing JSON response:", error);
+                    console.error("Response:", xhr.responseText);
+                }
+            } else {
+                alert('Failed to save transaction.');
+            }
+        };
+        xhr.onerror = function() {
+            alert('Error saving transaction.');
+        };
+        xhr.send(JSON.stringify({ cart_contents: cartContents }));
+    }
+    
+    
 
     function getWalletAmount() {
         const xhr = new XMLHttpRequest();
