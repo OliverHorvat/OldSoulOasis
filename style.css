@@ -1,206 +1,150 @@
-/* CSS variables */
-:root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --font-size-base: 16px;
-    --font-family-base: Arial, sans-serif;
-    background-color: #99bbff;
-
-    ;
-}
-
-header{
-    padding-top: 5%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 5%;
-}
-
-.cart-container{
-    padding-bottom: 3%;
-}
-
-.filter{
-    
-    width: 30%;
-    padding-bottom: 4%;
-    font-size: larger;
-}
-
-/* Global styles */
 body {
-    font-size: var(--font-size-base);
-    font-family: var(--font-family-base);
+    background-color: rgb(255, 220, 180);
+}
+
+.bg-header, .bg-footer {
+    background-color: rgb(201, 146, 82);
+    color: #fff;
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
     color: #333;
-    margin: 0;
-    padding: 0;
 }
 
-h1 {
-    font-size: 2.5em;
-    margin-top: 0;
+.nav-link{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Poravnava sadržaj unutar .nav-link po vertikali */
 }
 
-h2 {
-    font-size: 1.5em;
-    margin-top: 0;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-.new-button {
-    background-color: blueviolet;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    font-size: 1.2em;
-    cursor: pointer;
-    margin-bottom: 15%;
-}
-
-
-.user-info {
+.navbar-nav{
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-/* Header styles */
-.cart-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 0.5em 1em;
-    font-size: 1.2em;
-    cursor: pointer;
-}
-
-
-
-
-.cart-badge {
-    background-color: var(--secondary-color);
-    color: white;
-    border-radius: 50%;
-    padding: 0.2em 0.5em;
-    margin-left: 0.5em;
-    font-size: 0.8em;
-}
-
-/* Items grid styles */
-.items-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-gap: 1em;
-    margin-top: 1em;
-    padding-left: 10%;
-    padding-right: 10%;
-    padding-bottom: 10%;
 }
 
 .item {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    padding: 1em;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid rgb(201, 146, 82);
+    background-color: rgb(246, 204, 155);
 }
 
-.item h2 {
-    margin-top: 0.5em;
-}
-
-.item p {
-    font-size: 1.2em;
-    margin: 0.5em 0;
-}
-
-.wallet{
-    font-size: 2em;
-}
-
-.add-to-cart-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 0.5em 1em;
-    font-size: 1.2em;
-    cursor: pointer;
-    margin-top: auto;
-}
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal.show-modal {
-    display: block;
-    opacity: 1;
-}
-
-.modal-content {
-    background-color: white;
-    margin: 15% auto;
-    padding: 1em;
-    border: 1px solid #ccc;
-    max-width: 600px;
-}
-
-.close {
-    float: right;
-    font-size: 2em;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.cart-items {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.cart-items li {
+.item .image-container {
+    width: 20em; /* Set a fixed width */
+    height: 20em; /* Set a fixed height */
+    overflow: hidden; /* Hide overflow to keep images within bounds */
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5em;
+    justify-content: center;
+    align-items: center;
+}
+.item .image-container img {
+    width: 100%;
+    height: auto;
 }
 
-.cart-items li span {
-    margin-left: 0.5em;
+.item .basic-information {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 2rem;
 }
 
-.cart-total {
-    font-weight: bold;
+.item .basic-information .product-name {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+.item .basic-information .product-price {
+    font-size: 1.6rem;
+    color: #6a6a6a;
+    margin-bottom: 0;
+}
+
+.item .buttons {
+    flex: 0 0 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    margin-right: 2rem;
+}
+.item .buttons .details-btn,
+.item .buttons .add-to-cart-btn {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.btn-block {
+    border-color: rgb(201, 146, 82);
+    background-color: rgb(201, 146, 82);
+    color: #fff;
+}
+
+.btn-block:hover {
+    border-color: rgb(197, 135, 64);
+    background-color: rgb(197, 135, 64);
+    color: #fff;
+}
+
+.btn-block:focus {
+    box-shadow: 0 0 0 0.2rem rgba(197, 135, 64, 0.5);
+}
+
+.cart-column {
+    padding: 1rem;
+}
+
+.remove-btn {
+    flex: 0 0 15%;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    font-size: 1.2rem;
 }
 
 .buy-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 0.5em 1em;
-    font-size: 1.2em;
-    cursor: pointer;
-    margin-top: 1em;
+    height: 4rem;
+    font-size: 1.4rem;
+    padding: 1rem;
 }
 
-.image{
-    width: 200px; 
-    height: 200px;
+.cart-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+    background-color: gray;
+    justify-content: space-between;
+    background-color: rgb(246, 204, 155);
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+@media (max-width: 768px) {
+    .item {
+        flex-direction: column;
+        align-items: center;
+    }
+    .item .buttons {
+        margin-right: 0;
+    }
+    .item .basic-information {
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+    }
+    .item .basic-information .product-name {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+        margin-top: 0;
+    }
+    .item .basic-information .product-price {
+        font-size: 1.6rem;
+        color: #6a6a6a;
+        margin-bottom: 0;
+    }
 }
