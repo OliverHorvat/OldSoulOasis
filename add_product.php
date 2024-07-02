@@ -3,24 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product</title>
+    <title>Old Soul Oasis</title>
+    <link rel="icon" href="images/logo.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('productDescription').addEventListener('keydown', function(event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-        var textarea = event.target;
-        textarea.value = textarea.value + '\\n';
-    }
+       document.addEventListener('DOMContentLoaded', function() {
+
+
+    const adminSubmitButton = document.querySelector('.submit-btn');
+    adminSubmitButton.addEventListener('click', function() {
+        localStorage.setItem('addSuccess', 'true'); // Postavlja flag u localStorage prije slanja forme
+    });
+
+    document.getElementById('productDescription').addEventListener('keydown', function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            var textarea = event.target;
+            textarea.value = textarea.value + '\n';
+        }
+    });
 });
-        });
     </script>
 </head>
 <body>
 
 <?php include 'header.php'; ?>
+<div aria-live="polite" aria-atomic="true" style="position: relative; z-index: 1050;">
+    <div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;"></div>
+</div>
 
 <div class="container mt-5">
     <h1>Add Product</h1>

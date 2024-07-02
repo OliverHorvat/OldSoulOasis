@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Old Soul Oasis</title>
+    <link rel="icon" href="images/logo.png">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -11,6 +12,10 @@
 <body>
 
 <?php include 'header.php'; ?>
+<div aria-live="polite" aria-atomic="true" style="position: relative; z-index: 1050;">
+    <div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;"></div>
+</div>
+
 
 <div class="container mt-4 search-form">
     <form id="search-form">

@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 // Commit transakcije ako je unos uspješan
                 $pdo->commit();
-                header('Location: index.php');
+                header('Location: add_product.php');
                 exit();
             } else {
                 echo "Error inserting product into database.";

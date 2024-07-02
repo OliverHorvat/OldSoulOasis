@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartLink = document.getElementById('cart-link');
     const cartBadge = document.querySelector('.cart-badge');
     const buyButton = document.querySelector('.buy-btn');
+    const adminSubmitButton = document.querySelector('.submit-btn');
     const cartItemsList = document.querySelector('.cart-items');
     const filter = document.querySelector('.filter');
     const wallet = document.querySelector('.wallet');
@@ -15,6 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let productId = -1;
 
     setupFilter();
+    setupSort();
+
+    if (localStorage.getItem('addSuccess')) {
+        showToast("Product has been successfully added to shop.", "success");
+        localStorage.removeItem('addSuccess'); // Clean up localStorage
+    }
 
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
@@ -121,6 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', deleteProductHandler);
     });
 
+    
+    
     function addToCart(productId, quantity) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'add_to_cart.php');
@@ -132,20 +141,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.success) {
                         updateCartBadge();
                         $('#quantity-modal').modal('hide');
-                        alert("Product successfully added to cart.")
+                        showToast("Product successfully added to cart.", "success");
                     } else {
-                        alert(response.message);
+                        showToast(response.message, "danger");
                     }
                 } catch (error) {
                     console.error("Error parsing JSON response:", error);
                     console.error("Response:", xhr.responseText);
                 }
             } else {
-                alert('An error occurred while processing the request.');
+                showToast('An error occurred while processing the request.', "danger");
             }
         };
         xhr.onerror = function() {
-            alert('An error occurred while sending the request.');
+            showToast('An error occurred while processing the request.', "danger");
         };
         xhr.send(`product_id=${productId}&quantity=${quantity}`);
     }
@@ -236,11 +245,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error("Response:", xhr.responseText);
                 }
             } else {
-                alert('Failed to fetch cart contents.');
+                showToast("Failed to fetch cart contents.", "danger");
             }
         };
         xhr.onerror = function() {
-            alert('Error fetching cart contents.');
+           showToast("Error fetching cart contents", "danger");
         };
         xhr.send();
     }
@@ -257,18 +266,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateCartBadge();
                         checkCart();
                     } else {
-                        alert(response.message);
+                        showToast(response.message, 'danger');
                     }
                 } catch (error) {
                     console.error("Error parsing JSON response:", error);
                     console.error("Response:", xhr.responseText);
                 }
             } else {
-                alert('Failed to remove product from cart.');
+                showToast('Failed to remove product from cart.', 'danger');
             }
         };
         xhr.onerror = function() {
-            alert('Error removing product from cart.');
+            showToast('Error removing product from cart.', 'danger');
         };
         xhr.send(`product_id=${productId}&quantity=${quantity}`);
     }
@@ -289,18 +298,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         cartItemsList.innerHTML = "<p>Cart is empty!</p>";
                         buyButton.style.display = 'none';
                     } else {
-                        alert('Error clearing cart: ' + response.error);
+                        showToast('Error clearing cart: ' + response.error, 'danger');
                     }
                 } catch (error) {
                     console.error("Error parsing JSON response:", error);
                     console.error("Response:", xhr.responseText);
                 }
             } else {
-                alert('Failed to clear cart.');
+                showToast('Failed to clear cart: ' + response.error, 'danger');
             }
         };
         xhr.onerror = function() {
-            alert('Error clearing cart.');
+            showToast('Error clearing cart: ' + response.error, 'danger');
         };
         xhr.send();
     }
@@ -334,46 +343,57 @@ document.addEventListener('DOMContentLoaded', function() {
                                         // Clear the cart and update UI
                                         clearCart();
                                         updateCartBadge();
-    
+                                        $('#cart-modal').modal('hide');
+
                                         // Save transaction to database
                                         saveTransaction(cartContents);
     
-                                        alert("Purchase successful!");
+                                        // Store success message in localStorage
+                                        localStorage.setItem('purchaseSuccess', 'true');
     
-                                        
+                                        // Redirect to profile.php
                                         window.location.href = "profile.php";
-                                        
                                     } else {
-                                        alert("Not enough money!");
+                                        showToast("Not enough money!", "danger");
                                     }
                                 } catch (error) {
                                     console.error("Error parsing JSON response:", error);
                                     console.error("Response:", xhrWallet.responseText);
                                 }
                             } else {
-                                alert('Failed to fetch wallet amount.');
+                                showToast('Failed to fetch wallet amount.', 'danger');
                             }
                         };
                         xhrWallet.onerror = function() {
-                            alert('Error fetching wallet amount.');
+                            showToast('Error fetching wallet amount.', 'danger');
                         };
                         xhrWallet.send();
                     } else {
-                        alert("Your cart is empty!");
+                        showToast("Your cart is empty!", "danger");
                     }
                 } catch (error) {
                     console.error("Error parsing JSON response:", error);
                     console.error("Response:", xhrCart.responseText);
                 }
             } else {
-                alert('Failed to fetch cart contents.');
+                showToast("Failed to fetch cart contents.", "danger");
             }
         };
         xhrCart.onerror = function() {
-            alert('Error fetching cart contents.');
+            showToast("Error fetching cart contents.", "danger");
         };
         xhrCart.send();
     }
+    
+    // Check localStorage on profile.php load
+    window.onload = function() {
+        if (localStorage.getItem('purchaseSuccess')) {
+            showToast("Purchase successful!", "success");
+            localStorage.removeItem('purchaseSuccess'); // Clean up localStorage
+        }
+    };
+    
+    
     
 
     function saveTransaction(cartContents) {
@@ -387,18 +407,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.success) {
                         console.log("Transaction saved successfully.");
                     } else {
-                        alert(response.message);
+                        showToast(response.message, "danger");
                     }
                 } catch (error) {
                     console.error("Error parsing JSON response:", error);
                     console.error("Response:", xhr.responseText);
                 }
             } else {
-                alert('Failed to save transaction.');
+                showToast('Failed to save transaction.', 'danger');
             }
         };
         xhr.onerror = function() {
-            alert('Error saving transaction.');
+            showToast('Error saving transaction.', 'danger');
         };
         xhr.send(JSON.stringify({ cart_contents: cartContents }));
     }
@@ -465,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        alert('Product deleted successfully.');
+                        showToast('Product deleted successfully.', 'success');
     
                         // Nakon brisanja, ukloniti HTML element iz DOM-a
                         const productElement = document.getElementById('product-' + productId);
@@ -475,17 +495,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.error('Element not found for product ID:', productId);
                         }
                     } else {
-                        alert('Failed to delete product: ' + response.message);
+                        showToast('Failed to delete product: ' + response.message, 'danger');
                     }
                 } catch (error) {
                     console.error('Error parsing JSON response:', error);
                 }
             } else {
-                alert('Failed to delete product. Status:', xhr.status);
+                showToast('Failed to delete product. Status: '+ xhr.status, "danger");
             }
         };
         xhr.onerror = function() {
-            alert('Error deleting product. Network error.');
+            showToast('Error deleting product. Network error.', 'danger');
         };
         xhr.send(`product_id=${productId}`);
     }
@@ -524,6 +544,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 resetEventListeners();
             });
         }
+    }
+
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.classList.add('toast', `bg-${type}`, 'text-white', 'custom-toast');
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.innerHTML = `
+            <div class="toast-header">
+                <strong class="mr-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+                <button type="button" class="ml-4 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+        document.getElementById('toast-container').appendChild(toast);
+        $(toast).toast({ delay: 3000 });
+        $(toast).toast('show');
+        $(toast).on('hidden.bs.toast', function() {
+            toast.remove();
+        });
     }
 
     function resetEventListeners() {
@@ -574,5 +619,4 @@ document.addEventListener('DOMContentLoaded', function() {
     buyButton.addEventListener('click', buy);
 
     window.addEventListener('load', getWalletAmount);
-    setupSort();
 });
