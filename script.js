@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
     updateCartBadge();
 
     const cartLink = document.getElementById('cart-link');
@@ -8,17 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartItemsList = document.querySelector('.cart-items');
     const filter = document.querySelector('.filter');
     const wallet = document.querySelector('.wallet');
-    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-    const quantityButtons = document.querySelectorAll('.quantity-btn');
     const items = document.querySelectorAll('.item');
     const loginForm = document.getElementById('login-form');
     const loginMessage = document.getElementById('login-message');
     const registerForm = document.getElementById('register-form');
     const registerMessage = document.getElementById('register-message');
-    const detailsButtons = document.querySelectorAll('.details-btn');
     let productId = -1;
 
-    
     setupFilter();
 
     if (loginForm) {
@@ -100,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    addToCartButtons.forEach(button => {
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
             event.preventDefault();
             const quantity = document.getElementById('quantity').value;
@@ -108,14 +103,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    quantityButtons.forEach(button => {
+    document.querySelectorAll('.quantity-btn').forEach(button => {
         button.addEventListener('click', function() {
             productId = this.getAttribute('data-id');
             $('#quantity-modal').modal('show');
         });
     });
 
-    detailsButtons.forEach(button => {
+    document.querySelectorAll('.details-btn').forEach(button => {
         button.addEventListener('click', function() {
             const productId = this.getAttribute('data-id');
             showProductDetails(productId);
@@ -123,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function addToCart(productId, quantity) {
+        console.log("kokoska");
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'add_to_cart.php');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -169,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         xhr.send();
     }
-
 
     function updateCartBadge() {
         const xhr = new XMLHttpRequest();
@@ -224,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         cartItemsList.innerHTML = "<h5>Cart is empty!</h5>";
                         buyButton.style.display = 'none';
                     }
-    
+
                     document.querySelectorAll('.remove-btn').forEach(button => {
                         button.addEventListener('click', function() {
                             const productId = this.getAttribute('data-id');
@@ -245,7 +240,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         xhr.send();
     }
-    
 
     function removeFromCart(productId, quantity) {
         const xhr = new XMLHttpRequest();
@@ -274,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         xhr.send(`product_id=${productId}&quantity=${quantity}`);
     }
-    
+
     function clearCart() {
         cart = {};
         cartItemsCount = 0;
@@ -289,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         cartItemsList.innerHTML = "<p>Cart is empty!</p>";
-        		buyButton.style.display = 'none';
+                        buyButton.style.display = 'none';
                     } else {
                         alert('Error clearing cart: ' + response.error);
                     }
@@ -308,6 +302,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function buy() {
+        const isProfilePage = window.location.pathname.includes('profile.php');
+    
         const xhrCart = new XMLHttpRequest();
         xhrCart.open('GET', 'get_cart_contents.php');
         xhrCart.onload = function() {
@@ -341,6 +337,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                         saveTransaction(cartContents);
     
                                         alert("Purchase successful!");
+    
+                                        // Redirect to index.html if on profile.php
+                                        if (isProfilePage) {
+                                            window.location.href = "index.php";
+                                        }
                                     } else {
                                         alert("Not enough money!");
                                     }
@@ -373,6 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
         xhrCart.send();
     }
     
+
     function saveTransaction(cartContents) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'save_transaction.php');
@@ -399,8 +401,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         xhr.send(JSON.stringify({ cart_contents: cartContents }));
     }
-    
-    
 
     function getWalletAmount() {
         const xhr = new XMLHttpRequest();
@@ -471,8 +471,62 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function setupSort() {
+        const sortButton = document.querySelector('.sort-button');
+        if (sortButton) {
+            sortButton.addEventListener('click', function() {
+                const itemsArray = Array.from(items);
+                itemsArray.sort((a, b) => {
+                    const nameA = a.querySelector('h2').textContent.toLowerCase();
+                    const nameB = b.querySelector('h2').textContent.toLowerCase();
+                    return nameA.localeCompare(nameB);
+                });
+                const itemsContainer = document.querySelector('.items-container');
+                itemsContainer.innerHTML = '';
+                itemsArray.forEach(item => {
+                    itemsContainer.appendChild(item);
+                });
+                resetEventListeners();
+            });
+        }
+    }
+
+    function resetEventListeners() {
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.removeEventListener('click', addToCartHandler);
+            button.addEventListener('click', addToCartHandler);
+        });
+
+        document.querySelectorAll('.quantity-btn').forEach(button => {
+            button.removeEventListener('click', quantityBtnHandler);
+            button.addEventListener('click', quantityBtnHandler);
+        });
+
+        document.querySelectorAll('.details-btn').forEach(button => {
+            button.removeEventListener('click', detailsBtnHandler);
+            button.addEventListener('click', detailsBtnHandler);
+        });
+    }
+
+    function addToCartHandler(event) {
+        event.preventDefault();
+        const quantity = document.getElementById('quantity').value;
+        const productId = this.getAttribute('data-id');
+        addToCart(productId, quantity);
+    }
+
+    function quantityBtnHandler(event) {
+        productId = this.getAttribute('data-id');
+        $('#quantity-modal').modal('show');
+    }
+
+    function detailsBtnHandler(event) {
+        const productId = this.getAttribute('data-id');
+        showProductDetails(productId);
+    }
 
     buyButton.addEventListener('click', buy);
 
     window.addEventListener('load', getWalletAmount);
+    setupSort();
 });
