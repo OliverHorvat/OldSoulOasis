@@ -14,7 +14,6 @@ try {
     $query = "SELECT * FROM products WHERE name LIKE :search";
     $params = [':search' => '%' . $search . '%'];
 
-    // Dodavanje sortiranja
     if ($sort == 'price_asc') {
         $query .= " ORDER BY price ASC";
     } elseif ($sort == 'price_desc') {
@@ -42,7 +41,6 @@ try {
         echo '<div class="buttons">';
         echo '<button class="details-btn btn btn-block btn-lg" data-id="' . htmlspecialchars($product['id']) . '">Details</button>';
     
-        // Prikazivanje gumba "Add to cart" samo ako je korisnik prijavljen
         if (isset($_SESSION['id']) && $_SESSION['admin'] === false) {
             echo '<button class="quantity-btn btn btn-block btn-lg" data-id="' . htmlspecialchars($product['id']) . '">Add to cart</button>';
         }

@@ -15,14 +15,10 @@
                     </li>
                 </ul>
                 <?php
-                    // Provjera da li je korisnik prijavljen
                     session_start();
                     if (isset($_SESSION['id']) && $_SESSION['admin'] === false) {
-                        // Razdvajamo e-poštu na temelju znaka @
                         $emailParts = explode('@', $_SESSION['email']);        
-                        // Dohvaćamo dio e-pošte prije @
                         $emailPrefix = $emailParts[0];
-                        // Ako je prijavljen
                         echo '<ul class="navbar-nav ml-auto">';
                         echo '<li class="nav-item">';
                         echo '</li>';
@@ -45,7 +41,7 @@
                         echo '<a class="nav-link" href="logout.php">Log Out</a>';
                         echo '</li>';
                         echo '</ul>';
-                    }   elseif (isset($_SESSION['id']) && $_SESSION['admin'] === true) {
+                    } elseif (isset($_SESSION['id']) && $_SESSION['admin'] === true) {
                         echo '<ul class="navbar-nav ml-auto">';
                         echo '<li class="nav-item">';
                         echo '<a class="nav-link" href="add_product.php">Add Product</a>';
@@ -65,7 +61,7 @@
                         echo '</li>';
                         echo '</ul>';
                     }
-                    ?>
+                ?>
             </div>
         </nav>
     </div>

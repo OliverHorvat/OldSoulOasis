@@ -12,6 +12,12 @@
 <body>
 
 <?php include 'header.php'; ?>
+<?php
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
+}
+?>
 <div aria-live="polite" aria-atomic="true" style="position: relative; z-index: 1050;">
     <div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;"></div>
 </div>
@@ -22,7 +28,6 @@
         <h1>User Profile</h1>
         <div class="profile-info">
             <p><strong>Email:</strong> <?php echo htmlspecialchars($email); ?></p>
-            <!-- Dodajte dodatne informacije o korisniku ako su dostupne -->
         </div>
     </div>
 
@@ -36,13 +41,12 @@
                                 <p class="transaction-date">Transaction date: <?php echo date('Y-m-d H:i:s', strtotime($transaction['transaction_date'])); ?></p>
                                 <div class="transaction-details">
                                     <?php
-                                    // Razdvajamo produkte, količine i cijene u nizove
                                     $products = explode(', ', $transaction['products']);
                                     $quantities = explode(', ', $transaction['quantities']);
                                     $prices = explode(', ', $transaction['prices']);
                                     ?>
                                     <?php for ($i = 0; $i < count($products); $i++): ?>
-                                        <div class="column justify-content-center"> <!-- Centriranje sadržaja -->
+                                        <div class="column justify-content-center">
                                             <div>
                                                 <p class="product-name"><strong><?php echo $quantities[$i]; ?>x <?php echo $products[$i]; ?></strong></p>
                                             </div>

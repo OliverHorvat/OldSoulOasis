@@ -1,4 +1,3 @@
-<!-- Modal -->
 <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="login-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -9,7 +8,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Login Form -->
                 <form id="login-form" method="post">
                     <div class="form-group">
                         <label for="email">Email address:</label>
@@ -21,14 +19,12 @@
                     </div>
                     <button type="submit" class="btn btn-block">Log in</button>
                 </form>
-                <!-- Error or success message -->
                 <div id="login-message" class="mt-3"></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Register Modal -->
 <div class="modal fade" id="register-modal" tabindex="-1" role="dialog" aria-labelledby="register-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -39,7 +35,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Register Form -->
                 <form id="register-form" method="post" action="register.php">
                     <div class="form-group">
                         <label for="register-email">Email address:</label>
@@ -51,13 +46,11 @@
                     </div>
                     <button type="submit" class="btn btn-block">Register</button>
                 </form>
-                <!-- Error or success message -->
                 <div id="register-message" class="mt-3"></div>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="quantity-modal" tabindex="-1" role="dialog" aria-labelledby="quantity-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -100,9 +93,6 @@
     </div>
 </div>
 
-
-
-<!-- Modal for Product Details -->
 <div class="modal fade" id="product-details-modal" tabindex="-1" role="dialog" aria-labelledby="product-details-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

@@ -1,12 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    updateCartBadge();
 
     const cartLink = document.getElementById('cart-link');
     const cartBadge = document.querySelector('.cart-badge');
     const buyButton = document.querySelector('.buy-btn');
-    const adminSubmitButton = document.querySelector('.submit-btn');
     const cartItemsList = document.querySelector('.cart-items');
-    const filter = document.querySelector('.filter');
     const wallet = document.querySelector('.wallet');
     const items = document.querySelectorAll('.item');
     const loginForm = document.getElementById('login-form');
@@ -15,17 +12,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerMessage = document.getElementById('register-message');
     let productId = -1;
 
-    setupFilter();
     setupSort();
+    updateCartBadge();
 
     if (localStorage.getItem('addSuccess')) {
         showToast("Product has been successfully added to shop.", "success");
-        localStorage.removeItem('addSuccess'); // Clean up localStorage
+        localStorage.removeItem('addSuccess');
     }
+ 
+    if (localStorage.getItem('purchaseSuccess')) {
+        showToast("Purchase successful!", "success");
+        localStorage.removeItem('purchaseSuccess');
+    }
+
 
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevents the form from being submitted through the traditional process
+            e.preventDefault();
             const formData = new FormData(loginForm);
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'login.php');
@@ -34,14 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     try {
                         const response = JSON.parse(xhr.responseText);
                         if (response.success) {
-                            // Login is successful, you can perform the desired actions
-                            // For example, updating the interface or redirecting
                             loginMessage.innerHTML = '<div class="alert alert-success mt-3" role="alert">You have successfully logged in!</div>';
                             setTimeout(function() {
-                                location.reload(); // Refresh the page after login
-                            }, 1000); // Refresh the page after 1 second
+                                location.reload();
+                            }, 1000);
                         } else {
-                            // Displays an error message if login failed
                             loginMessage.innerHTML = '<div class="alert alert-danger mt-3" role="alert">Incorrect email address or password. Please try again.</div>';
                         }
                     } catch (error) {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the form from being submitted traditionally
+            e.preventDefault();
             const formData = new FormData(registerForm);
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'register.php');
@@ -69,16 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     try {
                         const response = JSON.parse(xhr.responseText);
                         if (response.success) {
-                            // Registration is successful, display success message
-                            registerMessage.innerHTML = '<div class="alert alert-success mt-3" role="alert">Registration successful! Logging you in...</div>';
+                            registerMessage.innerHTML = '<div class="alert alert-success mt-3" role="alert">Registration successful!</div>';
                             setTimeout(function() {
-                                $('#register-modal').modal('hide'); // Hide the modal after 2 seconds
-                                registerMessage.innerHTML = ''; // Clear the message
-                                registerForm.reset(); // Reset the form
-                                location.reload(); // Reload the page after successful registration and login
-                            }, 2000); // Hide the modal after 2 seconds
+                                $('#register-modal').modal('hide');
+                                registerMessage.innerHTML = '';
+                                registerForm.reset();
+                                location.reload();
+                            }, 2000);
                         } else {
-                            // Display error message if registration failed
                             registerMessage.innerHTML = '<div class="alert alert-danger mt-3" role="alert">' + response.error + '</div>';
                         }
                     } catch (error) {
@@ -101,6 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#cart-modal').modal('show');
         });
     }
+
+    buyButton.addEventListener('click', buy);
+
+    window.addEventListener('load', getWalletAmount);
 
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
@@ -128,8 +130,26 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', deleteProductHandler);
     });
 
-    
-    
+    function showProductDetails(productId) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `get_product_details.php?id=${productId}`, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const product = JSON.parse(xhr.responseText);
+                document.getElementById('product-details-modal-label').textContent = product.name;
+                const formattedDescription = product.description.replace(/\\n/g, '<br>');
+                document.getElementById('product-description').innerHTML = formattedDescription;
+                $('#product-details-modal').modal('show');
+            } else {
+                console.error('Failed to fetch product details.');
+            }
+        };
+        xhr.onerror = function() {
+            console.error('Error fetching product details.');
+        };
+        xhr.send();
+    }
+
     function addToCart(productId, quantity) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'add_to_cart.php');
@@ -157,26 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast('An error occurred while processing the request.', "danger");
         };
         xhr.send(`product_id=${productId}&quantity=${quantity}`);
-    }
-
-    function showProductDetails(productId) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `get_product_details.php?id=${productId}`, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                const product = JSON.parse(xhr.responseText);
-                document.getElementById('product-details-modal-label').textContent = product.name;
-                const formattedDescription = product.description.replace(/\\n/g, '<br>');
-                document.getElementById('product-description').innerHTML = formattedDescription;
-                $('#product-details-modal').modal('show');
-            } else {
-                console.error('Failed to fetch product details.');
-            }
-        };
-        xhr.onerror = function() {
-            console.error('Error fetching product details.');
-        };
-        xhr.send();
     }
 
     function updateCartBadge() {
@@ -339,19 +339,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                         walletAmountFromDB -= totalPrice;
                                         updateWallet(walletAmountFromDB);
                                         updateWalletInDatabase(walletAmountFromDB);
-    
-                                        // Clear the cart and update UI
                                         clearCart();
                                         updateCartBadge();
                                         $('#cart-modal').modal('hide');
-
-                                        // Save transaction to database
                                         saveTransaction(cartContents);
-    
-                                        // Store success message in localStorage
                                         localStorage.setItem('purchaseSuccess', 'true');
-    
-                                        // Redirect to profile.php
                                         window.location.href = "profile.php";
                                     } else {
                                         showToast("Not enough money!", "danger");
@@ -384,18 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         xhrCart.send();
     }
-    
-    // Check localStorage on profile.php load
-    window.onload = function() {
-        if (localStorage.getItem('purchaseSuccess')) {
-            showToast("Purchase successful!", "success");
-            localStorage.removeItem('purchaseSuccess'); // Clean up localStorage
-        }
-    };
-    
-    
-    
-
+      
     function saveTransaction(cartContents) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'save_transaction.php');
@@ -486,8 +467,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         showToast('Product deleted successfully.', 'success');
-    
-                        // Nakon brisanja, ukloniti HTML element iz DOM-a
                         const productElement = document.getElementById('product-' + productId);
                         if (productElement) {
                             productElement.remove();
@@ -508,22 +487,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast('Error deleting product. Network error.', 'danger');
         };
         xhr.send(`product_id=${productId}`);
-    }
-
-    function setupFilter() {
-        if (filter) {
-            filter.addEventListener('input', function() {
-                const search = filter.value.toLowerCase();
-                items.forEach(item => {
-                    const itemName = item.querySelector('h2').textContent.toLowerCase();
-                    if (itemName.includes(search)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        }
     }
 
     function setupSort() {
@@ -558,7 +521,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (type == "success"){
             type = "Success";
         }
-        toast.innerHTML = `
+        toast.innerHTML = 
+        `
             <div class="toast-header">
                 <strong class="mr-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
                 <button type="button" class="ml-4 mb-1 close" data-dismiss="toast" aria-label="Close">
@@ -574,28 +538,6 @@ document.addEventListener('DOMContentLoaded', function() {
         $(toast).toast('show');
         $(toast).on('hidden.bs.toast', function() {
             toast.remove();
-        });
-    }
-
-    function resetEventListeners() {
-        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.removeEventListener('click', addToCartHandler);
-            button.addEventListener('click', addToCartHandler);
-        });
-
-        document.querySelectorAll('.quantity-btn').forEach(button => {
-            button.removeEventListener('click', quantityBtnHandler);
-            button.addEventListener('click', quantityBtnHandler);
-        });
-
-        document.querySelectorAll('.details-btn').forEach(button => {
-            button.removeEventListener('click', detailsBtnHandler);
-            button.addEventListener('click', detailsBtnHandler);
-        });
-        
-        document.querySelectorAll('.admin-delete-btn').forEach(button => {
-            button.removeEventListener('click', deleteProductHandler); // Remove existing event listener
-            button.addEventListener('click', deleteProductHandler); // Add new event listener
         });
     }
 
@@ -619,10 +561,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function detailsBtnHandler(event) {
         const productId = this.getAttribute('data-id');
+       
         showProductDetails(productId);
     }
 
-    buyButton.addEventListener('click', buy);
+    function resetEventListeners() {
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.removeEventListener('click', addToCartHandler);
+            button.addEventListener('click', addToCartHandler);
+        });
 
-    window.addEventListener('load', getWalletAmount);
+        document.querySelectorAll('.quantity-btn').forEach(button => {
+            button.removeEventListener('click', quantityBtnHandler);
+            button.addEventListener('click', quantityBtnHandler);
+        });
+
+        document.querySelectorAll('.details-btn').forEach(button => {
+            button.removeEventListener('click', detailsBtnHandler);
+            button.addEventListener('click', detailsBtnHandler);
+        });
+        
+        document.querySelectorAll('.admin-delete-btn').forEach(button => {
+            button.removeEventListener('click', deleteProductHandler);
+            button.addEventListener('click', deleteProductHandler);
+        });
+    }
 });

@@ -8,15 +8,15 @@ html {
 }
 
 body {
-    margin-bottom: 60px; /* Visina footera */
-    padding-bottom: 60px; /* Visina footera */
+    margin-bottom: 60px;
+    padding-bottom: 60px;
 }
 
 footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60px; /* Visina footera */
+    height: 60px;
 }
 
 .footer-text {
@@ -26,7 +26,7 @@ footer {
 
 .content-wrap {
     min-height: 100%;
-    margin-bottom: -60px; /* Negativan margin koji kompenzira visinu footera */
+    margin-bottom: -60px;
 }
 
 
@@ -41,7 +41,7 @@ footer {
 .nav-link{
     display: flex;
     flex-direction: column;
-    align-items: center; /* Poravnava sadržaj unutar .nav-link po vertikali */
+    align-items: center;
 }
 
 .navbar-nav{
@@ -52,7 +52,7 @@ footer {
 
 .nav-item{
     font-weight: bold;
-    font-size: 1.1rem; /* Udvostručeno */
+    font-size: 1.1rem;
 }
 
 .item {
@@ -64,13 +64,14 @@ footer {
 }
 
 .item .image-container {
-    width: 20em; /* Set a fixed width */
-    height: 20em; /* Set a fixed height */
-    overflow: hidden; /* Hide overflow to keep images within bounds */
+    width: 20em;
+    height: 20em;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 .item .image-container img {
     width: 100%;
     height: auto;
@@ -210,10 +211,8 @@ footer {
     }
 }
 
-/***************************************************************************/
-
 .profile-info{
-    font-size: 1.8rem; /* Udvostručeno */
+    font-size: 1.8rem;
 }
 .transaction-list {
     margin-top: 20px;
@@ -228,8 +227,8 @@ footer {
 }
 
 .transaction-date {
-    font-size: 1.8rem; /* Udvostručeno */
-    text-align: center; /* Centriranje teksta */
+    font-size: 1.8rem;
+    text-align: center;
     
     margin-bottom: 10px;
 }
@@ -240,16 +239,16 @@ footer {
 
 .product-name,
 .product-price {
-    font-size: 1.6rem; /* Povećano */
-    margin-bottom: 5px; /* Manji razmak između proizvoda i cijene */
-    text-align: center; /* Centriranje teksta */
+    font-size: 1.6rem;
+    margin-bottom: 5px;
+    text-align: center;
 }
 
 .total-price {
     font-weight: bold;
-    font-size: 1.8rem; /* Udvostručeno */
-    margin-top: 10px; /* Dodatni razmak između transakcija */
-    text-align: center; /* Centriranje teksta */
+    font-size: 1.8rem;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .transaction-details ul {
@@ -258,8 +257,8 @@ footer {
 
 .transaction-details li {
     list-style-type: none;
-    margin-bottom: 10px; /* Razmak između stavki u listi */
-    font-size: 1.4rem; /* Veličina fonta za stavke u listi */
+    margin-bottom: 10px;
+    font-size: 1.4rem;
 }
 
 @media (max-width: 768px) {
@@ -275,10 +274,8 @@ footer {
     width: 40%;
     height: 5rem;
     font-size: 1.4rem;
-
 }
 
 .custom-toast {
-    
-    font-size: 1.2em; /* Povećava veličinu fonta */
+    font-size: 1.2em;
 }

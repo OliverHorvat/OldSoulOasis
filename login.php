@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$error = ''; // Initialize error message
+$error = '';
 $success = false;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,10 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = "";
         $dbname = "OldSoulOasis";
 
-        // Create connection
         $conn = new mysqli($servername, $username, $password, $dbname);
 
-        // Check connection
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
@@ -22,18 +20,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        // Prepare SQL statement
         $sql = "SELECT * FROM users WHERE email=?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        // Check if user exists and verify password
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             if (password_verify($password, $row['password'])) {
-                // Password correct, set session variables
                 $_SESSION['id'] = $row['id'];
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['admin'] = false;
@@ -53,8 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $error = "Please enter email and password.";
     }
-
-    // Return JSON response
     echo json_encode(array('success' => $success, 'error' => $error));
 }
 ?>
