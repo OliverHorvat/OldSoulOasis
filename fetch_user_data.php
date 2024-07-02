@@ -33,7 +33,7 @@ try {
                SUM(pr.price * th.quantity) AS total_price,
                th.transaction_date
         FROM transaction_history th
-        INNER JOIN products pr ON th.product_id = pr.id
+        INNER JOIN products_archive pr ON th.product_id = pr.id
         WHERE th.user_id = :user_id
         GROUP BY th.transaction_id
         ORDER BY th.transaction_date DESC

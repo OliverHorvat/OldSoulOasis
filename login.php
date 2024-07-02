@@ -36,7 +36,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Password correct, set session variables
                 $_SESSION['id'] = $row['id'];
                 $_SESSION['email'] = $row['email'];
+                $_SESSION['admin'] = false;
                 $success = true;
+                if ($row['admin'] == 1) {
+                    $_SESSION['admin'] = true;
+                }
             } else {
                 $error = "Incorrect password. Please try again.";
             }

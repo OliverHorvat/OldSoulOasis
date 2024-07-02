@@ -19,7 +19,8 @@ footer {
     height: 60px; /* Visina footera */
 }
 
-.black {
+.footer-text {
+    font-weight: bold;
     color:black;
 }
 
@@ -265,4 +266,14 @@ footer {
     .transaction {
         padding: 10px;
     }
+}
+
+.submit-btn{
+    margin-top: 2rem;
+    margin-left: 30%;
+    margin-left: 30%;
+    width: 40%;
+    height: 5rem;
+    font-size: 1.4rem;
+
 }

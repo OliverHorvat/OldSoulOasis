@@ -117,8 +117,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    document.querySelectorAll('.admin-delete-btn').forEach(button => {
+        button.addEventListener('click', deleteProductHandler);
+    });
+
     function addToCart(productId, quantity) {
-        console.log("kokoska");
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'add_to_cart.php');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -154,7 +157,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (xhr.status === 200) {
                 const product = JSON.parse(xhr.responseText);
                 document.getElementById('product-details-modal-label').textContent = product.name;
-                document.getElementById('product-description').textContent = product.description;
+                const formattedDescription = product.description.replace(/\\n/g, '<br>');
+                document.getElementById('product-description').innerHTML = formattedDescription;
                 $('#product-details-modal').modal('show');
             } else {
                 console.error('Failed to fetch product details.');
@@ -302,8 +306,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function buy() {
-        const isProfilePage = window.location.pathname.includes('profile.php');
-    
         const xhrCart = new XMLHttpRequest();
         xhrCart.open('GET', 'get_cart_contents.php');
         xhrCart.onload = function() {
@@ -338,10 +340,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
                                         alert("Purchase successful!");
     
-                                        // Redirect to index.html if on profile.php
-                                        if (isProfilePage) {
-                                            window.location.href = "index.php";
-                                        }
+                                        
+                                        window.location.href = "profile.php";
+                                        
                                     } else {
                                         alert("Not enough money!");
                                     }
@@ -455,6 +456,40 @@ document.addEventListener('DOMContentLoaded', function() {
         wallet.textContent = `$${amount.toFixed(2)}`;
     }
 
+    function deleteProduct(productId) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'delete_product.php');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        alert('Product deleted successfully.');
+    
+                        // Nakon brisanja, ukloniti HTML element iz DOM-a
+                        const productElement = document.getElementById('product-' + productId);
+                        if (productElement) {
+                            productElement.remove();
+                        } else {
+                            console.error('Element not found for product ID:', productId);
+                        }
+                    } else {
+                        alert('Failed to delete product: ' + response.message);
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON response:', error);
+                }
+            } else {
+                alert('Failed to delete product. Status:', xhr.status);
+            }
+        };
+        xhr.onerror = function() {
+            alert('Error deleting product. Network error.');
+        };
+        xhr.send(`product_id=${productId}`);
+    }
+
     function setupFilter() {
         if (filter) {
             filter.addEventListener('input', function() {
@@ -506,6 +541,11 @@ document.addEventListener('DOMContentLoaded', function() {
             button.removeEventListener('click', detailsBtnHandler);
             button.addEventListener('click', detailsBtnHandler);
         });
+        
+        document.querySelectorAll('.admin-delete-btn').forEach(button => {
+            button.removeEventListener('click', deleteProductHandler); // Remove existing event listener
+            button.addEventListener('click', deleteProductHandler); // Add new event listener
+        });
     }
 
     function addToCartHandler(event) {
@@ -513,6 +553,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const quantity = document.getElementById('quantity').value;
         const productId = this.getAttribute('data-id');
         addToCart(productId, quantity);
+    }
+
+    function deleteProductHandler(event) {
+        event.preventDefault();
+        const productId = this.getAttribute('data-id');
+        deleteProduct(productId);
     }
 
     function quantityBtnHandler(event) {

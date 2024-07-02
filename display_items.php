@@ -30,7 +30,7 @@ try {
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($products as $product) {
-        echo '<div class="col-md-12 mb-4">';
+        echo '<div id="product-' . htmlspecialchars($product['id']) . '" class="col-md-12 mb-4">';
         echo '<div class="item d-flex">';
         echo '<div class="image-container">';
         echo '<img class="image" src="' . htmlspecialchars($product['image']) . '" alt="' . htmlspecialchars($product['name']) . '">';
@@ -41,11 +41,19 @@ try {
         echo '</div>';
         echo '<div class="buttons">';
         echo '<button class="details-btn btn btn-block btn-lg" data-id="' . htmlspecialchars($product['id']) . '">Details</button>';
-        echo '<button class="quantity-btn btn btn-block btn-lg" data-id="' . htmlspecialchars($product['id']) . '">Add to cart</button>';
+    
+        // Prikazivanje gumba "Add to cart" samo ako je korisnik prijavljen
+        if (isset($_SESSION['id']) && $_SESSION['admin'] === false) {
+            echo '<button class="quantity-btn btn btn-block btn-lg" data-id="' . htmlspecialchars($product['id']) . '">Add to cart</button>';
+        }
+        if (isset($_SESSION['id']) && $_SESSION['admin'] === true) {
+            echo '<button class="admin-delete-btn btn btn-block btn-lg" data-id="' . htmlspecialchars($product['id']) . '">Delete</button>';
+        }
         echo '</div>';
         echo '</div>';
         echo '</div>';
     }
+    
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
