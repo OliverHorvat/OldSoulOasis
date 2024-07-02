@@ -47,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Registration successful, set session variables
                     $_SESSION['id'] = $stmt->insert_id;
                     $_SESSION['email'] = $email;
+                    $_SESSION['admin'] = 0;
                     $success = true;
                 } else {
                     $error = "Error: " . $stmt->error;

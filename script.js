@@ -552,6 +552,12 @@ document.addEventListener('DOMContentLoaded', function() {
         toast.setAttribute('role', 'alert');
         toast.setAttribute('aria-live', 'assertive');
         toast.setAttribute('aria-atomic', 'true');
+        if (type == "danger"){
+            type = "Warning";
+        }
+        if (type == "success"){
+            type = "Success";
+        }
         toast.innerHTML = `
             <div class="toast-header">
                 <strong class="mr-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
