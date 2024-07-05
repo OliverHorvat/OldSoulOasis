@@ -5,15 +5,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const buyButton = document.querySelector('.buy-btn');
     const cartItemsList = document.querySelector('.cart-items');
     const wallet = document.querySelector('.wallet');
-    const items = document.querySelectorAll('.item');
     const loginForm = document.getElementById('login-form');
     const loginMessage = document.getElementById('login-message');
     const registerForm = document.getElementById('register-form');
     const registerMessage = document.getElementById('register-message');
+    var searchInput = document.getElementById('search-input');
+    var searchValue = localStorage.getItem('searchInputValue');
+    var sortSelect = document.getElementById('sort-select');
+    var sortValue = localStorage.getItem('sortSelectValue');
     let productId = -1;
-
-    setupSort();
+    
     updateCartBadge();
+
+    if (searchValue) {
+        if (window.location.href.endsWith("index.php")){
+            localStorage.removeItem('searchInputValue')
+            searchValue = ""
+        }
+        searchInput.value = searchValue;
+    }
+
+    if (sortValue) {
+        if (window.location.href.endsWith("index.php")){
+            localStorage.removeItem('sortSelectValue')
+            sortValue = ""
+        }
+        sortSelect.value = sortValue;
+    }
 
     if (localStorage.getItem('addSuccess')) {
         showToast("Product has been successfully added to shop.", "success");
@@ -24,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast("Purchase successful!", "success");
         localStorage.removeItem('purchaseSuccess');
     }
-
 
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
@@ -100,6 +117,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    searchInput.addEventListener('input', function() {
+        localStorage.setItem('searchInputValue', this.value);
+    });
+
+    document.getElementById('sort-select').addEventListener('change', function() {
+        localStorage.setItem('sortSelectValue', this.value);
+    });
+
+    document.getElementById('sort-select').addEventListener('change', function() {
+        localStorage.setItem('sortSelectValue', this.value);
+    });
+
     buyButton.addEventListener('click', buy);
 
     window.addEventListener('load', getWalletAmount);
@@ -121,15 +150,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.details-btn').forEach(button => {
         button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-id');
+            productId = this.getAttribute('data-id');
             showProductDetails(productId);
         });
     });
 
     document.querySelectorAll('.admin-delete-btn').forEach(button => {
-        button.addEventListener('click', deleteProductHandler);
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            productId = this.getAttribute('data-id');
+            deleteProduct(productId);
+        });
     });
-
+    
     function showProductDetails(productId) {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', `get_product_details.php?id=${productId}`, true);
@@ -457,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wallet.textContent = `$${amount.toFixed(2)}`;
     }
 
-    function deleteProduct(productId) {
+    function deleteProduct() {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'delete_product.php');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -487,26 +520,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast('Error deleting product. Network error.', 'danger');
         };
         xhr.send(`product_id=${productId}`);
-    }
-
-    function setupSort() {
-        const sortButton = document.querySelector('.sort-button');
-        if (sortButton) {
-            sortButton.addEventListener('click', function() {
-                const itemsArray = Array.from(items);
-                itemsArray.sort((a, b) => {
-                    const nameA = a.querySelector('h2').textContent.toLowerCase();
-                    const nameB = b.querySelector('h2').textContent.toLowerCase();
-                    return nameA.localeCompare(nameB);
-                });
-                const itemsContainer = document.querySelector('.items-container');
-                itemsContainer.innerHTML = '';
-                itemsArray.forEach(item => {
-                    itemsContainer.appendChild(item);
-                });
-                resetEventListeners();
-            });
-        }
     }
 
     function showToast(message, type) {
@@ -540,50 +553,5 @@ document.addEventListener('DOMContentLoaded', function() {
             toast.remove();
         });
     }
-
-    function addToCartHandler(event) {
-        event.preventDefault();
-        const quantity = document.getElementById('quantity').value;
-        const productId = this.getAttribute('data-id');
-        addToCart(productId, quantity);
-    }
-
-    function deleteProductHandler(event) {
-        event.preventDefault();
-        const productId = this.getAttribute('data-id');
-        deleteProduct(productId);
-    }
-
-    function quantityBtnHandler(event) {
-        productId = this.getAttribute('data-id');
-        $('#quantity-modal').modal('show');
-    }
-
-    function detailsBtnHandler(event) {
-        const productId = this.getAttribute('data-id');
-       
-        showProductDetails(productId);
-    }
-
-    function resetEventListeners() {
-        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-            button.removeEventListener('click', addToCartHandler);
-            button.addEventListener('click', addToCartHandler);
-        });
-
-        document.querySelectorAll('.quantity-btn').forEach(button => {
-            button.removeEventListener('click', quantityBtnHandler);
-            button.addEventListener('click', quantityBtnHandler);
-        });
-
-        document.querySelectorAll('.details-btn').forEach(button => {
-            button.removeEventListener('click', detailsBtnHandler);
-            button.addEventListener('click', detailsBtnHandler);
-        });
-        
-        document.querySelectorAll('.admin-delete-btn').forEach(button => {
-            button.removeEventListener('click', deleteProductHandler);
-            button.addEventListener('click', deleteProductHandler);
-        });
-    }
+    
 });

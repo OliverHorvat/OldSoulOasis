@@ -21,10 +21,10 @@
     <form id="search-form">
         <div class="row align-items-center">
             <div class="col-md-7 mb-2 mb-md-0">
-                <input id="search-input" name="search" class="form-control form-control-lg mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <input id="search-input" name="search" class="form-control form-control-lg mr-sm-2" type="search" placeholder="Search" aria-label="Search" value="">
             </div>
             <div class="col-md-3 mb-2 mb-md-0">
-                <select id="sort-select" name="sort" class="form-control">
+                <select id="sort-select" name="sort" class="form-control" value = "">
                     <option value="">Sort by</option>
                     <option value="price_asc">Price: Low to High</option>
                     <option value="price_desc">Price: High to Low</option>

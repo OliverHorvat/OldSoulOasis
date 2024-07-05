@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 03, 2024 at 01:34 AM
+-- Generation Time: Jul 05, 2024 at 02:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -55,7 +55,7 @@ INSERT INTO `products` (`id`, `name`, `price`, `description`, `image`) VALUES
 (8, 'Dire Straits: Making Movies', 21.11, '1. Tunnel of Love\\n\r\n2. Romeo and Juliet\\n\r\n3. Skateaway\\n\r\n4. Expresso Love\\n\r\n5. Hand in Hand\\n\r\n6. Solid Rock\\n\r\n7. Les Boys', 'images/making_movies.jpg'),
 (18, 'Dire Straits: Alchemy - Dire Straits Live', 69.99, '1. Once Upon a Time in the West\\n2. Romeo and Juliet\\n3. Expresso Love\\n4. Private Investigations\\n5. Sultans of Swing\\n6. Two Young Lovers\\n7. Tunnel of Love \\n8. Telegraph Road\\n9. Solid Rock\\n10. Going Home – Theme from \'Local Hero\'', 'images/alchemy.jpg'),
 (19, 'Dire Straits: Love Over Gold', 24.99, '1. Telegraph Road\\n2. Private Investigations\\n3. Industrial Disease\\n4. Love Over Gold\\n5. It Never Rains', 'images/love_over_gold.jpg'),
-(20, 'Tom Petty and the Heartbreakers: Greatest Hits', 31.99, '1. American Girl\\n2. Breakdown\\n3. Anything That\'s Rock \'N\' Roll\\n4. Listen To Her Heart\\n5. I Need To Know\\n6. Refugee\\n7. Don\'t Do Me Like That\\n8. Even The Losers (Album Version)\\n9. Here Comes My Girl\\n10. The Waiting\\n11. You Got Lucky\\n12. Don\'t Come Around Here No More\\n13. I Won\'t Back Down - Petty, Tom\\n14. Runnin\' Down A Dream - Petty, Tom\\n15. Free Fallin\' - Petty, Tom\\n16. Learning To Fly\\n17. Into The Great Wide Open\\n18. Mary Jane\'s Last Dance (Greatest Hits Edited Version)\\n19. Something In The Air (1993 Greatest Hits Version)', 'images/tom_petty_greatest_hits.jpg'),
+(20, 'Tom Petty and the Heartbreakers: Greatest Hits', 31.99, '1. American Girl\\n2. Breakdown\\n3. Anything That\'s Rock \'N\' Roll\\n4. Listen To Her Heart\\n5. I Need To Know\\n6. Refugee\\n7. Don\'t Do Me Like That\\n8. Even The Losers (Album Version)\\n9. Here Comes My Girl\\n10. The Waiting\\n11. You Got Lucky\\n12. Don\'t Come Around Here No More\\n13. I Won\'t Back Down\\n14. Runnin\' Down A Dream\\n15. Free Fallin\' - Petty, Tom\\n16. Learning To Fly\\n17. Into The Great Wide Open\\n18. Mary Jane\'s Last Dance (Greatest Hits Edited Version)\\n19. Something In The Air (1993 Greatest Hits Version)', 'images/tom_petty_greatest_hits.jpg'),
 (22, 'Tom Petty: Full Moon Fever', 29.99, '1. Free Fallin\' (Album Version)\\n2. I Won\'t Back Down (Album Version)\\n3. Love Is A Long Road (Album Version)\\n4. A Face In The Crowd (Album Version)\\n5. Runnin\' Down A Dream (Album Version)\\n6. Feel A Whole Lot Better (Album Version)\\n7. Yer So Bad (Album Version)\\n8. Depending On You (Album Version)\\n9. The Apartment Song (Album Version)\\n10. Alright For Now (Album Version)\\n11. A Mind With A Heart Of Its Own (Album Version)\\n12. Zombie Zoo (Album Version)\\n', 'images/full_moon_fever.jpg'),
 (23, 'Red Hot Chili Peppers: Stadium Arcadium', 65.79, '1. Dani California\\n2. Snow (Hey Oh)\\n3. Charlie\\n4. Stadium Arcadium\\n5. Hump de Bump\\n6. She\'s Only 18\\n7. Slow Cheetah\\n8. Torture Me\\n9. Strip My Mind\\n10. Especially in Michigan\\n11. Warlocks\\n12. C\'mon Girl\\n13. Wet Sand\\n14. Hey\\n15. Desecration Smile\\n16. Tell Me Baby\\n17. Hard to Concentrate\\n18. 21st Century\\n19. She Looks to Me\\n20. Readymade\\n21. If\\n22. Make You Feel Better\\n23. Animal Bar\\n24. So Much I\\n25. Storm in a Teacup\\n26. We Believe\\n27. Turn It Again\\n28. Death of a Martian', 'images/stadium_arcadium.jpg'),
 (24, 'Red Hot Chili Peppers: Californication', 31.99, '1. Around the World\\n2. Parallel Universe\\n3. Scar Tissue\\n4. Otherside\\n5. Get on Top\\n6. Californication\\n7. Easily\\n8. Porcelain\\n9. Emit Remmus\\n10. I Like Dirt\\n11. This Velvet Glove\\n12. Savior\\n13. Purple Stain\\n14. Right on Time\\n15. Road Trippin\'\\n', 'images/californication.jpg'),
@@ -134,7 +134,13 @@ INSERT INTO `products_archive` (`id`, `name`, `price`, `description`, `image`) V
 (53, '12312', 31321.00, 'adsasd', 'images/blank.jpg'),
 (54, '21331', 32123.00, '321321', 'images/blank.jpg'),
 (55, '123', 213312.00, '123', 'images/blank.jpg'),
-(56, '213231', 123.00, '123', 'images/blank.jpg');
+(56, '213231', 123.00, '123', 'images/blank.jpg'),
+(57, 'test', 11.00, 'testtest\\ntesttest', 'images/making_movies.jpg'),
+(58, 'testtesttest', 1234.00, 'testt\\nteste\\net\\nte\\nt\\neet', 'images/stadium_arcadium.jpg'),
+(59, 'tesstt', 3.00, 'test', 'images/making_movies.jpg'),
+(60, 'test', 3.00, 'test\\nt\\nt\\nt\\nt\\nt\\nts\\ns', 'images/alchemy.jpg'),
+(61, 'tet', 1312.00, 'teasdda', 'images/alchemy.jpg'),
+(62, 'asd', 1.00, 'asd', 'images/making_movies.jpg');
 
 -- --------------------------------------------------------
 
@@ -252,7 +258,9 @@ INSERT INTO `transaction_history` (`transaction_id`, `user_id`, `product_id`, `q
 (81, 16, 8, 1, '2024-07-02 23:04:38'),
 (82, 16, 8, 1, '2024-07-02 23:17:41'),
 (83, 16, 8, 5, '2024-07-02 23:24:22'),
-(83, 16, 18, 1, '2024-07-02 23:24:22');
+(83, 16, 18, 1, '2024-07-02 23:24:22'),
+(84, 16, 8, 2, '2024-07-05 00:17:59'),
+(84, 16, 20, 2, '2024-07-05 00:17:59');
 
 -- --------------------------------------------------------
 
@@ -273,7 +281,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `wallet`, `admin`) VALUES
-(16, 'kokoska1@gmail.com', '$2y$10$.7AxouLRjRfHy2DZ8H.9BOZATFRZale5pxy7B1D0IupxS0oiy3NxK', 97700.77, 0),
+(16, 'kokoska1@gmail.com', '$2y$10$.7AxouLRjRfHy2DZ8H.9BOZATFRZale5pxy7B1D0IupxS0oiy3NxK', 97594.57, 0),
 (19, 'patrikkk@gmaul.com', '$2y$10$ewX9EKOCS4GkPOwif1omPu1ICZfdomN3pZkvtWsjhBfAcL4eooz.u', 72.09, 0),
 (20, 'kodsaasdkoska1@gmail.com', '$2y$10$1UGBucCMdztnsvbmptvMQun/A3CHoXwGfVvQGlSPeetMbnFgDpRnW', 100.00, 0),
 (21, 'dasasadsdas@dasads.adsda', '$2y$10$1vfKQ71R393CdhJe2urJku1RasOXXq8gFXBorc85L7WYPPanIiTqa', 100.00, 0),
@@ -321,7 +329,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `users`
