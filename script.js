@@ -9,28 +9,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginMessage = document.getElementById('login-message');
     const registerForm = document.getElementById('register-form');
     const registerMessage = document.getElementById('register-message');
-    var searchInput = document.getElementById('search-input');
-    var searchValue = localStorage.getItem('searchInputValue');
-    var sortSelect = document.getElementById('sort-select');
-    var sortValue = localStorage.getItem('sortSelectValue');
     let productId = -1;
-    
+
     updateCartBadge();
 
-    if (searchValue) {
-        if (window.location.href.endsWith("index.php")){
-            localStorage.removeItem('searchInputValue')
-            searchValue = ""
+    if(!window.location.href.endsWith("profile.php")){
+        var searchInput = document.getElementById('search-input');
+        var searchValue = localStorage.getItem('searchInputValue');
+        var sortSelect = document.getElementById('sort-select');
+        var sortValue = localStorage.getItem('sortSelectValue');
+    
+        if (searchValue) {
+            if (window.location.href.endsWith("index.php")){
+                localStorage.removeItem('searchInputValue')
+                searchValue = ""
+            }
+            searchInput.value = searchValue;
         }
-        searchInput.value = searchValue;
-    }
 
-    if (sortValue) {
-        if (window.location.href.endsWith("index.php")){
-            localStorage.removeItem('sortSelectValue')
-            sortValue = ""
+        if (sortValue) {
+            if (window.location.href.endsWith("index.php")){
+                localStorage.removeItem('sortSelectValue')
+                sortValue = ""
+            }
+            sortSelect.value = sortValue;
         }
-        sortSelect.value = sortValue;
+
+        searchInput.addEventListener('input', function() {
+            localStorage.setItem('searchInputValue', this.value);
+            });
+    
+        document.getElementById('sort-select').addEventListener('change', function() {
+                localStorage.setItem('sortSelectValue', this.value);
+            });  
     }
 
     if (localStorage.getItem('addSuccess')) {
@@ -115,19 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
             checkCart();
             $('#cart-modal').modal('show');
         });
-    }
-
-    searchInput.addEventListener('input', function() {
-        localStorage.setItem('searchInputValue', this.value);
-    });
-
-    document.getElementById('sort-select').addEventListener('change', function() {
-        localStorage.setItem('sortSelectValue', this.value);
-    });
-
-    document.getElementById('sort-select').addEventListener('change', function() {
-        localStorage.setItem('sortSelectValue', this.value);
-    });
+    }    
 
     buyButton.addEventListener('click', buy);
 
