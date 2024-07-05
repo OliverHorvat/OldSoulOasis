@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function(event) {
             event.preventDefault();
             productId = this.getAttribute('data-id');
-            deleteProduct(productId);
+            deleteProduct();
         });
     });
     
